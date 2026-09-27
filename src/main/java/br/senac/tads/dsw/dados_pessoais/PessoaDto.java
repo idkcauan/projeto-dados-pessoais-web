@@ -1,27 +1,50 @@
 package br.senac.tads.dsw.dados_pessoais;
 
-import org.springframework.cglib.core.Local;
+import br.senac.tads.dsw.dados_pessoais.validacao.SenhasIguais;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class Pessoa {
+@SenhasIguais
+public class PessoaDto {
 
 	private Integer id;
+
+	@NotBlank(message = "O username é obrigatório")
+	@Size(max = 64)
 	private String userName;
+
+	@NotBlank(message = "O nome completo é obrigatório")
+	@Size(max = 100)
 	private String nome;
+
+	@NotBlank
+	@Size(max = 1000)
+	@Email
 	private String email;
+
+	@Size(max = 20)
 	private String telefone;
+
+	@NotNull
+	@PastOrPresent
 	private LocalDate dataNascimento;
+
 	private String senha;
 	private String senhaRepeticao;
 	private List<String> conhecimentos;
 
-	public Pessoa() {
+	public PessoaDto() {
 
 	}
 
-	public Pessoa(int id, String userName, String nome, String email, String telefone, LocalDate dataNascimento) {
+	public PessoaDto(int id, String userName, String nome, String email, String telefone, LocalDate dataNascimento) {
 		this.id = id;
 		this.userName = userName;
 		this.nome = nome;
