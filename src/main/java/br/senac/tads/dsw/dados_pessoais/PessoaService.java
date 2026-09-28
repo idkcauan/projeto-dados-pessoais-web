@@ -47,11 +47,11 @@ public class PessoaService {
 			throw new NaoEncontradoException("Pessoa" + userName + " não encontrada");
 		}
 		PessoaDto pessoaOriginal = mapPessoas.get(userName);
-		pessoaOriginal.setNome(pessoaAlteracao.getNome();
-		pessoaOriginal.setEmail(pessoaAlteracao.getEmail());
-		pessoaOriginal.setTelefone(pessoaAlteracao.getTelefone());
-		pessoaOriginal.setDataNascimento(pessoaAlteracao.getDataNascimento());
-		pessoaOriginal.setConhecimentos(pessoaAlteracao.getConhecimentos());
+		pessoaOriginal.setNome(pessoaAlteracaoDto.getNome());
+		pessoaOriginal.setEmail(pessoaAlteracaoDto.getEmail());
+		pessoaOriginal.setTelefone(pessoaAlteracaoDto.getTelefone());
+		pessoaOriginal.setDataNascimento(pessoaAlteracaoDto.getDataNascimento());
+		pessoaOriginal.setConhecimentos(pessoaAlteracaoDto.getConhecimentos());
 		return pessoaOriginal;
 	}
 
