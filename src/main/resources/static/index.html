@@ -7,7 +7,7 @@
 </head>
 <body>
   <h1>Pessoas</h1>
-  <a href="/form.html">Cadastrar nova pessoa</a>
+  <a href="form.html">Cadastrar nova pessoa</a>
 
   <section>
     <h2>Lista de Pessoas</h2>
@@ -91,8 +91,8 @@
                <td>${p.username}</td>
                <td>${p.email}</td>
                <td>
-                 <button on click = "abrirFormEdicao('${p.username}')">Editar</button>
-                 <button on click = "excluirPessoa('${p.username}')">Excluir</button>
+                 <button onclick = "abrirFormEdicao('${p.userName}')">Editar</button>
+                 <button onclick = "excluirPessoa('${p.userName}')">Excluir</button>
                </td>
             </tr>`
           );
@@ -134,14 +134,14 @@
       document.getElementById('editUsername').textContent = username;
       document.getElementById('editNome').value = p.nome;
       document.getElementById('editEmail').value = p.email;
-      document.getElementById('edit').value = p.telefone ?? '';
+      document.getElementById('editTelefone').value = p.telefone ?? '';
       document.getElementById('editDataNascimento').value = p.dataNascimento;
       const checkboxes = document.querySelectorAll('[name="editConhecimentos"]');
-      for(const cb of checksboxes) {
+      for(const cb of checkboxes) {
         cb.checked = p.conhecimentos && p.conhecimentos.includes(cb.value);
       }
 
-      document.getElementById('formEdicao').dataSet.username = username;
+      document.getElementById('formEdicao').dataset.username = username;
       document.getElementById('secaoEdicao').style.display = 'block';
     }
 

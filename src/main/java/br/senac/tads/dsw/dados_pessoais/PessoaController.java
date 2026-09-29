@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/pessoas")
-public class PessoaController {
+public class  PessoaController {
 
 	private final PessoaService pessoaService;
 
@@ -52,6 +52,7 @@ public class PessoaController {
 		return ResponseEntity.created(location).build();
 	}
 
+	@PostMapping
 	public ResponseEntity<?> incluirNovoComValidacao(@RequestBody @Valid PessoaDto pessoa) {
 		pessoaService.incluirNovaPessoa(pessoa);
 		URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/pessoas/{userName}")
