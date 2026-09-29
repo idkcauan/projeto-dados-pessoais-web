@@ -15,9 +15,6 @@
     <table>
       <thead>
       <tr>
-        <th>ID</th><th>UserName</th><th>Email</th>
-      </tr>
-      <tr>
         <th>ID</th><th>Nome</th><th>Username</th><th>Email</th><th>Ações</th>
       </tr>
       </thead>
@@ -88,9 +85,10 @@
             `<tr>
                <td>${p.id}</td>
                <td>${p.nome}</td>
-               <td>${p.username}</td>
+               <td>${p.userName}</td>
                <td>${p.email}</td>
                <td>
+                 <button onclick="getPessoa('${p.userName}')">Visualizar</button>
                  <button onclick = "abrirFormEdicao('${p.userName}')">Editar</button>
                  <button onclick = "excluirPessoa('${p.userName}')">Excluir</button>
                </td>
@@ -111,7 +109,7 @@
         const p = await httpResp.json();
         document.getElementById('nome').textContent = p.nome;
         document.getElementById('id').textContent = p.id;
-        document.getElementById('username').textContent = p.username;
+        document.getElementById('username').textContent = p.userName;
         document.getElementById('email').textContent = p.email;
         document.getElementById('telefone').textContent = p.telefone;
         document.getElementById('dataNascimento').textContent = p.dataNascimento;

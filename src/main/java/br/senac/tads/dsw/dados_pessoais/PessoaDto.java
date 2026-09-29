@@ -44,7 +44,7 @@ public class PessoaDto {
 
 	}
 
-	public PessoaDto(int id, String userName, String nome, String email, String telefone, LocalDate dataNascimento) {
+	public PessoaDto(Integer id, String userName, String nome, String email, String telefone, LocalDate dataNascimento) {
 		this.id = id;
 		this.userName = userName;
 		this.nome = nome;
