@@ -19,7 +19,7 @@ public interface PessoaRepository extends JpaRepository<PessoaEntity, Integer> {
 
 	@Query("""
 		SELECT p FROM PessoaEntity p
-		WHERE LOWER(p.userName) LIKE LOWER(CONCAT('%', :termo, '%'))
+		WHERE LOWER(p.username) LIKE LOWER(CONCAT('%', :termo, '%'))
 			OR LOWER(p.nome) LIKE LOWER(CONCAT('%', :termo, '%'))
 			OR LOWER(p.email) LIKE LOWER(CONCAT('%', :termo, '%'))
 		""")
