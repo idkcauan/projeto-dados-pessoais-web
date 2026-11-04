@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.senac.tads.dsw.dados_pessoais.entidade.UsuarioSistemaEntity;
+import br.senac.tads.dsw.dados_pessoais.repositorio.UsuarioSistemaRepository;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,13 +14,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Service
 public class UsuarioSistemaService implements UserDetailsService {
 
+	private final UsuarioSistemaRepository usuarioSistemaRepository;
+
 	private final Map<String, UserDetails> usuarios;
 
-	public UsuarioSistemaService(PasswordEncoder passwordEncoder) {
+	public UsuarioSistemaService(PasswordEncoder passwordEncoder, UsuarioSistemaRepository usuarioSistemaRepository) {
+		this.usuarioSistemaRepository = usuarioSistemaRepository;
 
 		this.usuarios = new HashMap<>();
 
@@ -43,16 +50,22 @@ public class UsuarioSistemaService implements UserDetailsService {
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username)
+		throws UsernameNotFoundException {
 
-		UserDetails usuario = usuarios.get(username);
+		UsuarioSistemaEntity usuario = usuarioSistemaRepository.findByUsername(username)
+			.orElseThrow(() ->
+				new UsernameNotFoundException("Usuário não encontrado"));
 
-		if (usuario == null) {
-			throw new UsernameNotFoundException("Usuário não encontrado: " + username);
+	List<GrantedAuthority> authorities =
+		usuario.getRoles().stream().<GrantedAuthority>map(role ->
+			new SimpleGrantedAuthority(role.getNome())).toList();
+			return new UsuarioSistema(
+				usuario.getUsername(),
+				usuario.getSenha(),
+				authorities
+			);
 		}
-
-		return usuario;
-	}
 
 }
 

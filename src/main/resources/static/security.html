@@ -42,7 +42,6 @@
 </head>
 <body>
 <h1>Demo: Spring Security + JWT</h1>
-<!-- ===== SEÇÃO 1: LOGIN ===== -->
 <h2>1. Login</h2>
 <label for="inputUsername">Username:</label>
 <input type="text" id="inputUsername" value="admin" />
@@ -52,21 +51,17 @@
 <button onclick="fazerLogin()">Entrar</button>
 <p id="erroLogin" class="erro"></p>
 <p id="statusLogin" class="sucesso"></p>
-<!-- ===== SEÇÃO 2 EM DIANTE: visível apenas após login ===== -->
 <div id="secaoLogado" class="oculto">
-  <!-- ===== SEÇÃO 2: TOKEN ===== -->
   <h2>2. Token JWT Recebido</h2>
   <div class="caixa">
     <pre id="tokenTexto"></pre>
   </div>
-  <!-- ===== SEÇÃO 3: ENDPOINT /me ===== -->
   <h2>3. Dados do Usuário Logado — GET /me</h2>
   <button class="azul" onclick="chamarMe()">GET /me</button>
   <div id="resultadoMe" class="caixa oculto">
     <strong>Resposta:</strong>
     <pre id="textoMe"></pre>
   </div>
-  <!-- ===== SEÇÃO 4: ENDPOINTS POR ROLE ===== -->
   <h2>4. Endpoints por Role</h2>
   <p style="font-size: 0.88rem; color: #555;">
     Todos os botões ficam visíveis. O servidor decide quem tem acesso com base na role do JWT.
@@ -85,18 +80,15 @@
       GET /acesso/user — exige ROLE_USER
     </button>
   </div>
-  <!-- ===== SEÇÃO 5: LOGOUT ===== -->
   <h2>5. Logout</h2>
   <button class="cinza" onclick="fazerLogout()">Sair (remover token)</button>
   <p style="font-size: 0.85rem; color: #666; margin-top: 6px;">
     O token é armazenado no <code>localStorage</code> do navegador.
     Ao sair, ele é removido — mas no servidor, o token permanece válido até expirar.
   </p>
-</div><!-- fim #secaoLogado -->
+</div>
+
 <script>
-  // ============================================================
-  // INICIALIZAÇÃO — verifica se há token salvo de sessão anterior
-  // ============================================================
   window.addEventListener('load', () => {
     const token = localStorage.getItem('jwt_token');
     if (token) {
@@ -105,9 +97,7 @@
         'Token encontrado no localStorage (sessão anterior).';
     }
   });
-  // ============================================================
-  // LOGIN
-  // ============================================================
+
   async function fazerLogin() {
     const username = document.getElementById('inputUsername').value.trim();
     const senha = document.getElementById('inputSenha').value;
@@ -141,9 +131,7 @@
     document.getElementById('secaoLogado').classList.remove('oculto');
     document.getElementById('resultadoMe').classList.add('oculto');
   }
-  // ============================================================
-  // ENDPOINT /me — resultado exibido no corpo da página
-  // ============================================================
+
   async function chamarMe() {
     const token = localStorage.getItem('jwt_token');
     try {
@@ -159,9 +147,7 @@
       alert('Erro de conexão: ' + err.message);
     }
   }
-  // ============================================================
-  // ENDPOINTS POR ROLE — resultado exibido em alert
-  // ============================================================
+
   async function chamarRole(caminho) {
     const token = localStorage.getItem('jwt_token');
     try {
@@ -178,15 +164,35 @@
       alert('Erro de conexão: ' + err.message);
     }
   }
-  // ============================================================
-  // LOGOUT
-  // ============================================================
+
   function fazerLogout() {
     localStorage.removeItem('jwt_token');
     document.getElementById('secaoLogado').classList.add('oculto');
+    try {
+      const partes = token.split('.');
+      const payload = base64UrlDecode(partes[1]);
+      const roles = payload.roles ?? [];
+      document.getElementById('btnAdmin').style.display =
+        roles.includes('ROLE_ADMIN') ? '' : 'none';
+      document.getElementById('btnGerente').style.display =
+        roles.includes('ROLE_GERENTE') ? '' : 'none';
+      document.getElementById('btnUser').style.display =
+        roles.includes('ROLE_USER') ? '' : 'none';
+    }
+    catch (e) {
+    }
     document.getElementById('statusLogin').textContent =
       'Token removido. Faça login novamente.';
     }
+
+  function base64UrlDecode(str) {
+    str = str.replace(/-/g, '+').replace(/_/g, '/');
+
+    while (str.length % 4 !== 0) str += '=';
+
+    return JSON.parse(atob(str));
+  }
+
   </script>
 
 </body>

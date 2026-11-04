@@ -59,6 +59,8 @@ public class SecurityConfig {
 				.requestMatchers(HttpMethod.PUT, "/pessoas/**").authenticated()
 				.requestMatchers(HttpMethod.DELETE, "/pessoas/**").authenticated()
 
+
+
 				.anyRequest().authenticated()
 
 			)

@@ -6,6 +6,12 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class UsuarioSistema implements UserDetails {
 	private final String username;
 	private final String password;
@@ -22,11 +28,13 @@ public class UsuarioSistema implements UserDetails {
 		return username;
 	}
 
+	@JsonProperty("senhaCodificada")
 	@Override
 	public String getPassword() {
 		return password;
 	}
 
+	@JsonIgnore
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return authorities;
@@ -50,6 +58,11 @@ public class UsuarioSistema implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	@JsonProperty("roles")
+	public List<String> getRoles() {
+		return authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 	}
 
 }
