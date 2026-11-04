@@ -15,6 +15,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
+import br.senac.tads.dsw.dados_pessoais.entidade.RoleEntity;
+import br.senac.tads.dsw.dados_pessoais.entidade.UsuarioSistemaEntity;
+import br.senac.tads.dsw.dados_pessoais.repositorio.RoleRepository;
+import br.senac.tads.dsw.dados_pessoais.repositorio.UsuarioSistemaRepository;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import javax.xml.crypto.Data;
 
 @Component
@@ -22,10 +31,20 @@ public class DataInitializer implements CommandLineRunner {
 
 	private final PessoaRepository pessoaRepository;
 	private final ConhecimentoRepository conhecimentoRepository;
+	private final UsuarioSistemaRepository usuarioSistemaRepository;
+	private final RoleRepository roleRepository;
+	private final PasswordEncoder passwordEncoder;
 
-	public DataInitializer(PessoaRepository pessoaRepository, ConhecimentoRepository conhecimentoRepository) {
+
+	public DataInitializer(PessoaRepository pessoaRepository, ConhecimentoRepository conhecimentoRepository,
+						   UsuarioSistemaRepository usuarioSistemaRepository, RoleRepository roleRepository,
+						   PasswordEncoder passwordEncoder) {
+
 		this.pessoaRepository = pessoaRepository;
 		this.conhecimentoRepository = conhecimentoRepository;
+		this.usuarioSistemaRepository = usuarioSistemaRepository;
+		this.roleRepository = roleRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Override
@@ -72,6 +91,42 @@ public class DataInitializer implements CommandLineRunner {
 			p3.getConhecimentos().add(mapConhecimentos.get("SQL"));
 			pessoaRepository.save(p3);
 		}
+
+		if (usuarioSistemaRepository.count() == 0) {
+
+			// Criando as permissões
+			RoleEntity admin = criarRole("ROLE_ADMIN");
+			RoleEntity gerente = criarRole("ROLE_GERENTE");
+			RoleEntity user = criarRole("ROLE_USER");
+
+			// Criando os usuários
+			criarUsuario("admin", Set.of(admin, gerente, user));
+
+			criarUsuario("user1", Set.of(gerente, user));
+
+			criarUsuario("user2", Set.of(user));
+		}
+	}
+
+	private RoleEntity criarRole(String nome) {
+
+		return roleRepository.findByNome(nome)
+			.orElseGet(() -> {
+				RoleEntity role = new RoleEntity();
+				role.setNome(nome);
+				return roleRepository.save(role);
+			});
+	}
+
+	private void criarUsuario(String username, Set<RoleEntity> roles) {
+
+		UsuarioSistemaEntity usuario = new UsuarioSistemaEntity();
+
+		usuario.setUsername(username);
+		usuario.setSenha(passwordEncoder.encode("Abcd%12345"));
+		usuario.setRoles(roles);
+
+		usuarioSistemaRepository.save(usuario);
 	}
 
 }
